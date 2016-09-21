@@ -242,7 +242,7 @@ $(function() {
 
             //Ajax
             $.ajax({
-                url: "http://"+hostName+"/DMD201608/addProfile", // setting api domain
+                url: "https://"+hostName+"/DMD201608/addProfile", // setting api domain
                 data: {
                   userdata: FormData,
                 },
