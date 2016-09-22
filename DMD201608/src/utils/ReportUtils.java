@@ -7,12 +7,16 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
 
 import beans.CustomerBean;
 
@@ -127,103 +131,25 @@ public class ReportUtils {
     	// TXT報表存放路徑
     	String txtFile = folder+"/" + date+FORMAT_TXT;
     	
-    	FileWriter outFile = null;
-    	PrintWriter writer = null;
 		try {
-			outFile = new FileWriter(txtFile);
-			writer = new PrintWriter(outFile);
-
+			List<String> lines = new ArrayList<String>();
 			// 欄位名稱
-			writer.write("姓名,性別,手機,住家電話區碼,住家電話,有興趣商品,名單序號,電子信箱\r\n");
-			writer.flush();
+			lines.add("姓名,性別,手機,住家電話區碼,住家電話,有興趣商品,名單序號,電子信箱");
 			// 報表資料寫入
 			for( CustomerBean bean: cmList ) {
-				try {
-					String data = bean.getName() +","+ bean.getGender() +","+ bean.getCellphone() +","+ bean.getAreacode() +","+ bean.getTelephone() 
-								+","+ bean.getProductname() +","+ bean.getSeqnum() +","+ bean.getEmail() +"\r\n";
-					// 去除空白
-					data = data.replace(" ", "");
+				String data = bean.getName() +","+ bean.getGender() +","+ bean.getCellphone() +","+ bean.getAreacode() +","+ bean.getTelephone() 
+							+","+ bean.getProductname() +","+ bean.getSeqnum() +","+ bean.getEmail();
+				// 去除空白
+				data = data.replace(" ", "");
 
-					writer.write(data);
-					writer.flush();
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
+				lines.add(data);
 			}
-			
-	        writer.close();
-	        outFile.close();
+			FileUtils.writeLines(new File(txtFile), "big5", lines, "\r\n");
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
-		} finally {
-			try {
-	        	if( writer!=null ) 
-	        		writer.close();
-	        	if( outFile!=null )
-	        		outFile.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
-    }
-    
-    public static void testEncode(List<CustomerBean> cmList, String folder) {
-    	System.out.println(" Get System file.encoding: "+ System.getProperty("file.encoding"));
-
-    	String[] encodeList = {"UTF-8", "UTF-16", "Cp1252", "ISO-8859-1", "ISO-8859-15", "UTF-16BE", "UTF-16LE", "ASCII", "US-ASCII"};
-    	
-    	for( String encode: encodeList )
-    	{
-        	// TXT報表存放路徑
-        	String txtFile = folder+"/" + encode+FORMAT_TXT;
-        	
-        	FileWriter outFile = null;
-        	PrintWriter writer = null;
-    		try {
-    			outFile = new FileWriter(txtFile);
-    			writer = new PrintWriter(outFile);
-
-    			// 欄位名稱
-    			writer.write("姓名,性別,手機,住家電話區碼,住家電話,有興趣商品,名單序號,電子信箱\r\n");
-    			writer.flush();
-    			// 報表資料寫入
-    			for( CustomerBean bean: cmList ) {
-    				try {
-    					String data = bean.getName() +","+ bean.getGender() +","+ bean.getCellphone() +","+ bean.getAreacode() +","+ bean.getTelephone() 
-    								+","+ bean.getProductname() +","+ bean.getSeqnum() +","+ bean.getEmail() +"\r\n";
-    					// 去除空白
-    					data = data.replace(" ", "");
-
-    					writer.write(data);
-    					writer.flush();
-    				} catch(Exception e) {
-    					e.printStackTrace();
-    				}
-    			}
-    			
-    	        writer.close();
-    	        outFile.close();
-    			
-    		} catch (IOException e) {
-    			// TODO Auto-generated catch block
-    			e.printStackTrace();
-    			
-    		} finally {
-    			try {
-    	        	if( writer!=null ) 
-    	        		writer.close();
-    	        	if( outFile!=null )
-    	        		outFile.close();
-    			} catch (IOException e) {
-    				// TODO Auto-generated catch block
-    				e.printStackTrace();
-    			}
-    		}
-    	}
     }
 
     /**

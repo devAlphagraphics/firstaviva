@@ -81,7 +81,6 @@ public class genReport extends HttpServlet {
 				rs = pstmt.executeQuery();
 				
 				// 將從DB撈出的資料整理，待後續產CSV檔使用
-				int seqnum = 1;
 				while( rs.next() ) {
 					try {
 						// 將DB java.sql.timestamp格式轉成java.util.Date格式
@@ -92,7 +91,7 @@ public class genReport extends HttpServlet {
 						String timeStr = ReportUtils.getDateFormat(date, "HH:mm:ss");
 
 						CustomerBean bean = new CustomerBean();
-						bean.setSeqnum(seqnum);
+						bean.setSeqnum(rs.getInt("recordid"));
 						bean.setName(rs.getString("name"));
 						bean.setGender(rs.getString("gender"));
 						bean.setCellphone(rs.getString("cellphone"));
@@ -105,7 +104,6 @@ public class genReport extends HttpServlet {
 						bean.setMediasource(rs.getString("mediasource"));
 						
 						cmList.add(bean);
-						seqnum++;
 						
 					} catch(Exception e) {
 						e.printStackTrace();
